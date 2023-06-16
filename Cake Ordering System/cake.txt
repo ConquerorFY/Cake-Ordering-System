@@ -1,0 +1,5 @@
+1||Vanilla||1 kg||RM15.00
+2||Chocalate||3.3 kg||RM24.00
+3||Strawberry||0.7 kg||RM9.00
+4||Cheese||1.4 kg||RM35.00
+5||Grape||2.5 kg||RM45.00

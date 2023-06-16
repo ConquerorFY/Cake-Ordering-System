@@ -87,8 +87,8 @@ class OrderBST:
         mid = (start + end) // 2
         node = arr[mid]
 
-        node.left = self.constructPerfectBST(arr, start, mid - 1)
-        node.right = self.constructPerfectBST(arr, mid + 1, end)
+        node.setLeft(self.constructPerfectBST(arr, start, mid - 1))
+        node.setRight(self.constructPerfectBST(arr, mid + 1, end))
 
         return node
 

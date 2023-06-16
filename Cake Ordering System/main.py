@@ -10,9 +10,11 @@ orderBST = OrderBST()
 
 def initSystem():
     readCakeDataFromFile(cakeBST)
+    readCustomerDataFromFile(customerBST)
+    readOrderDataFromFile(orderBST)
 
 def main():
     initSystem()
-    debugCakeBST(cakeBST)
+    welcomeScreen(customerBST)
 
 main()

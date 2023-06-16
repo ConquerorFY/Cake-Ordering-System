@@ -1,11 +1,14 @@
 from utils import inorder
+from file import writeCustomerDataFromFile, readCustomerDataFromFile
 
 class Customer:
-    def __init__(self, custID, name, address, contact, left = None, right = None):
+    def __init__(self, custID, name, address, contact, username, password, left = None, right = None):
         self.custID = custID
         self.name = name
         self.address = address
         self.contact = contact
+        self.username = username
+        self.password = password
         self.left = left
         self.right = right
 
@@ -21,6 +24,12 @@ class Customer:
 
     def getContact(self):
         return self.contact
+
+    def getUsername(self):
+        return self.username
+
+    def getPassword(self):
+        return self.password
 
     def getLeft(self):
         return self.left
@@ -41,6 +50,12 @@ class Customer:
     def setContact(self, contact):
         self.contact = contact
 
+    def setUsername(self, username):
+        self.username = username
+
+    def setPassword(self, password):
+        self.password = password
+
     def setLeft(self, left):
         self.left = left
 
@@ -51,10 +66,10 @@ class CustomerBST:
     def __init__(self):
         self.root = None
 
-    def add(self, custID, name, address, contact):
+    def add(self, custID, name, address, contact, username, password):
         if not self.root:
             # if the BST is empty
-            self.root = Customer(custID, name, address, contact)
+            self.root = Customer(custID, name, address, contact, username, password)
         else:
             # insert based on customer ID
             current = self.root
@@ -63,7 +78,7 @@ class CustomerBST:
                 if custID < current.getCustID():
                     if not current.getLeft():
                         # insert at left leaf node
-                        current.setLeft(Customer(custID, name, address, contact))
+                        current.setLeft(Customer(custID, name, address, contact, username, password))
                         break
                     else:
                         # traverse down the left subtree
@@ -72,7 +87,7 @@ class CustomerBST:
                 elif custID > current.getCustID():
                     if not current.getRight():
                         # insert at right leaf node
-                        current.setRight(Customer(custID, name, address, contact))
+                        current.setRight(Customer(custID, name, address, contact, username, password))
                         break
                     else:
                         # traverse down the right subtree
@@ -87,8 +102,8 @@ class CustomerBST:
         mid = (start + end) // 2
         node = arr[mid]
 
-        node.left = self.constructPerfectBST(arr, start, mid - 1)
-        node.right = self.constructPerfectBST(arr, mid + 1, end)
+        node.setLeft(self.constructPerfectBST(arr, start, mid - 1))
+        node.setRight(self.constructPerfectBST(arr, mid + 1, end))
 
         return node
 
@@ -100,7 +115,7 @@ class CustomerBST:
 
         self.root = self.constructPerfectBST(arr, 0, n - 1)
 
-    def update(self, custID, name, address, contact):
+    def update(self, custID, name, address, contact, username, password):
         if not self.root:
             # if the BST is empty
             raise Exception
@@ -116,6 +131,8 @@ class CustomerBST:
                     current.setName(name)
                     current.setAddress(address)
                     current.setContact(contact)
+                    current.setUsername(username)
+                    current.setPassword(password)
                     break
 
                 if current.getLeft():
@@ -125,6 +142,38 @@ class CustomerBST:
                 if current.getRight():
                     # if right node not None
                     queue.append(current.getRight())
+
+    def authenticateCustomer(self, username, password):
+        if not self.root:
+            return -1 # No user account exists
+        else:
+            queue = [self.root]
+
+            while len(queue) > 0:
+                current = queue.pop()
+
+                if current.getUsername() == username:
+                    if current.getPassword() == password:
+                        return 0 # Authentication success
+                    else:
+                        return -2 # Invalid password
+
+                if current.getLeft():
+                    queue.insert(0, current.getLeft())
+
+                if current.getRight():
+                    queue.insert(0, current.getRight())
+
+            return -1
+
+    def registerCustomer(self, name, address, contact, username, password):
+        # Generate new customer ID
+        arr = []
+        inorder(self.root, arr)
+        newCustID = int(max([node.getCustID() for node in arr])) + 1 if len(arr) > 0 else 1
+
+        writeCustomerDataFromFile(Customer(newCustID, name, address, contact, username, password))
+        readCustomerDataFromFile(self)
 
     def print(self):
         if not self.root:

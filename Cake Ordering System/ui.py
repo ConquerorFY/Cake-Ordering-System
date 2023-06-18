@@ -1,6 +1,7 @@
 from customer import CustomerBST
 from cake import CakeBST
 from order import OrderBST
+from file import clearCustomerSessionFile
 
 def welcomeScreen(customerBST: CustomerBST):
     while True:
@@ -42,7 +43,8 @@ def loginScreen(customerBST: CustomerBST):
             result = customerBST.authenticateCustomer(username, password)
             if result == 0:
                 print("\n\nAuthentication is successful!\n\n\n\n")
-                # handle after login functions
+                # display customer dashboard after login success
+                customerDashboard(customerBST)
                 return
             elif result == -1:
                 print("\n\nNo user account exists!\n\n\n\n")
@@ -74,6 +76,35 @@ def registerScreen(customerBST: CustomerBST):
             return
         elif option == 2:
             print("\n\n\n\n")
+            welcomeScreen(customerBST)
+            return
+
+def customerDashboard(customerBST: CustomerBST):
+    customerInfo = customerBST.getAuthenticatedCustomerDetails()
+
+    while True:
+        print("Welcome back, " + customerInfo.getName())
+        print("---------------------------------------------\n\n")
+
+        print("Please select the operations you would like to do: ")
+        print("1. View / Order Cakes")
+        print("2. View / Modify Orders")
+        print("3. Modify Account Details")
+        print("4. Logout")
+        option = int(input("Option: "))
+
+        if option == 1:
+            # view / order cakes
+            return
+        elif option == 2:
+            # view / modify orders
+            return
+        elif option == 3:
+            # modify account details
+            return
+        elif option == 4:
+            # logout
+            clearCustomerSessionFile()
             welcomeScreen(customerBST)
             return
 

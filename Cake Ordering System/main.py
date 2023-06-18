@@ -1,6 +1,6 @@
-from customer import *
-from cake import *
-from order import *
+from customer import CustomerBST
+from cake import CakeBST
+from order import OrderBST
 from ui import *
 from file import *
 

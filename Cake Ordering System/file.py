@@ -1,13 +1,12 @@
-from cake import CakeBST
-from customer import CustomerBST, Customer
-from order import OrderBST, Order
+import os
 
 cakeFile = "cake.txt"
 customerFile = "customer.txt"
 orderFile = "order.txt"
+sessionFile = "session.txt"
 separator = "||"
 
-def readCakeDataFromFile(cakeBST: CakeBST):
+def readCakeDataFromFile(cakeBST):
     cakeBST.root = None
     try:
         file = open(cakeFile, "r")
@@ -26,7 +25,7 @@ def readCakeDataFromFile(cakeBST: CakeBST):
         with open(cakeFile, "w") as file:
             file.write("")
 
-def readCustomerDataFromFile(customerBST: CustomerBST):
+def readCustomerDataFromFile(customerBST):
     customerBST.root = None
     try:
         file = open(customerFile, "r")
@@ -47,7 +46,7 @@ def readCustomerDataFromFile(customerBST: CustomerBST):
         with open(customerFile, "w") as file:
             file.write("")
 
-def readOrderDataFromFile(orderBST: OrderBST):
+def readOrderDataFromFile(orderBST):
     orderBST.root = None
     try:
         file = open(orderFile, "r")
@@ -66,10 +65,38 @@ def readOrderDataFromFile(orderBST: OrderBST):
         with open(orderFile, "w") as file:
             file.write("")
 
-def writeCustomerDataFromFile(customer: Customer):
+def insertCustomerDataToFile(customer):
     with open(customerFile, 'a') as file:
         file.write(str(customer.getCustID()) + separator + customer.getName() + separator + customer.getAddress() + separator + customer.getContact() + separator + customer.getUsername() + separator + customer.getPassword() + separator + "\n")
 
-def writeOrderDataFromFile(order: Order):
+def insertOrderDataToFile(order):
     with open(orderFile, 'a') as file:
         file.write(str(order.getOrderID()) + separator + str(order.getCustID()) + separator + str(order.getQuantity()) + separator + str(order.getCustID()) + separator + "\n")
+
+def createCustomerSessionFile(customer):
+    with open(sessionFile, 'w') as file:
+        file.write(str(customer.getCustID()) + separator + customer.getName() + separator + customer.getAddress() + separator + customer.getContact() + separator + customer.getUsername() + separator + customer.getPassword() + separator)
+
+def readCustomerSessionFile():
+    try:
+        file = open(sessionFile, "r")
+
+        for line in file:
+            data = line.split(separator)
+            custID = data[0]
+            name = data[1]
+            address = data[2]
+            contact = data[3]
+            username = data[4]
+            password = data[5]
+
+            file.close()
+            return [custID, name, address, contact, username, password]
+
+    except FileNotFoundError:
+        print("Session file not created! Customer have not login!")
+        return None
+
+def clearCustomerSessionFile():
+    if os.path.exists(sessionFile):
+        os.remove(sessionFile)

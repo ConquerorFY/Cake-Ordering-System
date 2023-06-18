@@ -1,5 +1,5 @@
 from utils import inorder
-from file import writeCustomerDataFromFile, readCustomerDataFromFile
+from file import insertCustomerDataToFile, readCustomerDataFromFile, createCustomerSessionFile, readCustomerSessionFile
 
 class Customer:
     def __init__(self, custID, name, address, contact, username, password, left = None, right = None):
@@ -154,6 +154,8 @@ class CustomerBST:
 
                 if current.getUsername() == username:
                     if current.getPassword() == password:
+                        # Create logged in session file for customer
+                        createCustomerSessionFile(current)
                         return 0 # Authentication success
                     else:
                         return -2 # Invalid password
@@ -166,13 +168,21 @@ class CustomerBST:
 
             return -1
 
+    def getAuthenticatedCustomerDetails(self):
+        customer = readCustomerSessionFile()
+
+        if not customer:
+            raise Exception("Please login first before invoking this function!")
+
+        return Customer(customer[0], customer[1], customer[2], customer[3], customer[4], customer[5])
+
     def registerCustomer(self, name, address, contact, username, password):
         # Generate new customer ID
         arr = []
         inorder(self.root, arr)
         newCustID = int(max([node.getCustID() for node in arr])) + 1 if len(arr) > 0 else 1
 
-        writeCustomerDataFromFile(Customer(newCustID, name, address, contact, username, password))
+        insertCustomerDataToFile(Customer(newCustID, name, address, contact, username, password))
         readCustomerDataFromFile(self)
 
     def print(self):

@@ -1,9 +1,9 @@
-from customer import CustomerBST
+from customer import Auth
 from cake import CakeBST
 from order import OrderBST
 from file import clearCustomerSessionFile
 
-def welcomeScreen(customerBST: CustomerBST):
+def welcomeScreen():
     while True:
         print("   _____          _  ________    ____  _____  _____  ______ _____  _____ _   _  _____    _______     _______ _______ ______ __  __ ")
         print("  / ____|   /\   | |/ /  ____|  / __ \|  __ \|  __ \|  ____|  __ \|_   _| \ | |/ ____|  / ____\ \   / / ____|__   __|  ____|  \/  |")
@@ -19,15 +19,15 @@ def welcomeScreen(customerBST: CustomerBST):
 
         option = int(input("Option: "))
         if option == 1: 
-            loginScreen(customerBST)
+            loginScreen()
             return
         elif option == 2: 
-            registerScreen(customerBST)
+            registerScreen()
             return
         elif option == 3:
             return
 
-def loginScreen(customerBST: CustomerBST):
+def loginScreen():
     while True:
         print("Login Screen")
         print("---------------------------------------------\n\n")
@@ -40,21 +40,23 @@ def loginScreen(customerBST: CustomerBST):
         option = int(input("Option: "))
 
         if option == 1:
-            result = customerBST.authenticateCustomer(username, password)
+            result = Auth.authenticateCustomer(username, password)
             if result == 0:
                 print("\n\nAuthentication is successful!\n\n\n\n")
                 # display customer dashboard after login success
-                customerDashboard(customerBST)
+                customerDashboard()
                 return
             elif result == -1:
-                print("\n\nNo user account exists!\n\n\n\n")
-            elif result == -2:
                 print("\n\nInvalid password detected!\n\n\n\n")
+            elif result == -2:
+                print("\n\nCustomer account not found!\n\n\n\n")
+            elif result == -3:
+                print("\n\nAn error has occurred! Please try again!\n\n\n\n")
         elif option == 2:
-            loginScreen(customerBST)
+            loginScreen()
             return
 
-def registerScreen(customerBST: CustomerBST):
+def registerScreen():
     while True:
         print("Register Screen")
         print("---------------------------------------------\n\n")
@@ -70,17 +72,17 @@ def registerScreen(customerBST: CustomerBST):
         option = int(input("Option: "))
 
         if option == 1:
-            customerBST.registerCustomer(name, address, contact, username, password)
+            Auth.registerCustomer(name, address, contact, username, password)
             print("\n\nRegistration is completed!!\n\n\n\n")
-            welcomeScreen(customerBST)
+            welcomeScreen()
             return
         elif option == 2:
             print("\n\n\n\n")
-            welcomeScreen(customerBST)
+            welcomeScreen()
             return
 
-def customerDashboard(customerBST: CustomerBST):
-    customerInfo = customerBST.getAuthenticatedCustomerDetails()
+def customerDashboard():
+    customerInfo = Auth.getAuthenticatedCustomerDetails()
 
     while True:
         print("Welcome back, " + customerInfo.getName())
@@ -105,11 +107,8 @@ def customerDashboard(customerBST: CustomerBST):
         elif option == 4:
             # logout
             clearCustomerSessionFile()
-            welcomeScreen(customerBST)
+            welcomeScreen()
             return
-
-def debugCustomerBST(customerBST: CustomerBST):
-    customerBST.print()
 
 def debugCakeBST(cakeBST: CakeBST):
     cakeBST.print()

@@ -123,7 +123,7 @@ def clearCustomerSessionFile():
         os.remove(sessionFile)
 
 # Cake
-def readCakeDataFromFile(cakeBST):
+def readAllCakeDataFromFile(cakeBST):
     cakeBST.root = None
     try:
         file = open(cakeFile, "r")
@@ -143,8 +143,11 @@ def readCakeDataFromFile(cakeBST):
             file.write("")
 
 # Order
-def readOrderDataFromFile(orderBST):
+def readCustomerOrderDataFromFile(orderBST):
     orderBST.root = None
+    customerSessionInfo = readCustomerSessionFile()
+    custID = customerSessionInfo[0]
+
     try:
         file = open(orderFile, "r")
 
@@ -153,8 +156,11 @@ def readOrderDataFromFile(orderBST):
             orderID = data[0]
             cakeCode = data[1]
             quantity = data[2]
-            custID = data[3]
-            orderBST.add(orderID, cakeCode, quantity, custID)
+            chkCustID = data[3]
+            status = data[4]
+
+            if chkCustID == custID:
+                orderBST.add(orderID, cakeCode, quantity, custID, status)
 
         file.close()
 
@@ -164,4 +170,35 @@ def readOrderDataFromFile(orderBST):
 
 def insertOrderDataToFile(order):
     with open(orderFile, 'a') as file:
-        file.write(str(order.getOrderID()) + separator + str(order.getCustID()) + separator + str(order.getQuantity()) + separator + str(order.getCustID()) + separator + "\n")
+        file.write(str(order.getOrderID()) + separator + str(order.getCustID()) + separator + str(order.getQuantity()) + separator + str(order.getCustID()) + separator + order.getStatus() + separator + "\n")
+
+def getUniqueOrderID():
+    try:
+        file = open(orderFile, "r")
+
+        latestOrderID = 0
+        for line in file:
+            data = line.split(separator)
+            latestOrderID = data[0]
+
+        file.close()
+        return int(latestOrderID) + 1
+
+    except FileNotFoundError:
+        with open(orderFile, "w") as file:
+            file.write("")
+        return 1
+
+def updateCustomerOrderDetails(order):
+    with open(orderFile, 'r') as file:
+        lines = file.readlines()
+
+    for i in range(len(lines)):
+        dataLine = lines[i].split(separator)
+        chkOrderID = dataLine[0]
+
+        if order.getOrderID() == chkOrderID:
+            lines[i] = str(order.getOrderID()) + separator + str(order.getCustID()) + separator + str(order.getQuantity()) + separator + str(order.getCustID()) + separator + order.getStatus() + separator + "\n"
+
+    with open(orderFile, 'w') as file:
+        file.writelines(lines)

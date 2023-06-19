@@ -1,11 +1,13 @@
 from utils import inorder
+from file import *
 
 class Order:
-    def __init__(self, orderID, cakeCode, quantity, custID, left = None, right = None):
+    def __init__(self, orderID, cakeCode, quantity, custID, status = "Pending", left = None, right = None):
         self.orderID = orderID
         self.cakeCode = cakeCode
         self.quantity = quantity
         self.custID = custID
+        self.status = status
         self.left = left
         self.right = right
 
@@ -21,6 +23,9 @@ class Order:
 
     def getCustID(self):
         return self.custID
+
+    def getStatus(self):
+        return self.status
 
     def getLeft(self):
         return self.left
@@ -41,6 +46,9 @@ class Order:
     def setCustID(self, custID):
         self.custID = custID
 
+    def setStatus(self, status):
+        self.status = status
+
     def setLeft(self, left):
         self.left = left
 
@@ -51,10 +59,10 @@ class OrderBST:
     def __init__(self):
         self.root = None
 
-    def add(self, orderID, cakeCode, quantity, custID):
+    def add(self, orderID, cakeCode, quantity, custID, status):
         if not self.root:
             # if the BST is empty
-            self.root = Order(orderID, cakeCode, quantity, custID)
+            self.root = Order(orderID, cakeCode, quantity, custID, status)
         else:
             # insert based on cake code
             current = self.root
@@ -63,7 +71,7 @@ class OrderBST:
                 if orderID < current.getOrderID():
                     if not current.getLeft():
                         # insert at left leaf node
-                        current.setLeft(Order(orderID, cakeCode, quantity, custID))
+                        current.setLeft(Order(orderID, cakeCode, quantity, custID, status))
                         break
                     else:
                         # traverse down the left subtree
@@ -72,7 +80,7 @@ class OrderBST:
                 elif orderID > current.getOrderID():
                     if not current.getRight():
                         # insert at right leaf node
-                        current.setRight(Order(orderID, cakeCode, quantity, custID))
+                        current.setRight(Order(orderID, cakeCode, quantity, custID, status))
                         break
                     else:
                         # traverse down the right subtree
@@ -100,31 +108,25 @@ class OrderBST:
 
         self.root = self.constructPerfectBST(arr, 0, n - 1)
 
-    def update(self, orderID, cakeCode, quantity, custID):
-        if not self.root:
-            # if the BST is empty
-            raise Exception
-        else:
-            # use breadth first search (BFS)
-            queue = [self.root]
+    def createNewOrder(self, cakeCode, quantity, custID):
+        newOrderID = getUniqueOrderID()
+        newOrder = Order(newOrderID, cakeCode, quantity, custID)
+        insertOrderDataToFile(newOrder)
+        self.getAllCustomerOrder()
 
-            while len(queue) > 0:
-                current = queue.pop()
+    def getAllCustomerOrder(self):
+        readCustomerOrderDataFromFile(self)
 
-                if current.getOrderID() == orderID:
-                    # update current node details
-                    current.setCakeCode(cakeCode)
-                    current.setQuantity(quantity)
-                    current.setCustID(custID)
-                    break
+    def getSortedCustomerOrder(self):
+        # Inorder traversal to get sorted order list (based on order ID)
+        sortedOrderArr = []
+        inorder(self.root, sortedOrderArr)
 
-                if current.getLeft():
-                    # if left node not None
-                    queue.append(current.getLeft())
+        return sortedOrderArr
 
-                if current.getRight():
-                    # if right node not None
-                    queue.append(current.getRight())
+    def modifyCustomerOrder(self, order):
+        updateCustomerOrderDetails(order)
+        readCustomerOrderDataFromFile(self)
 
     def print(self):
         if not self.root:

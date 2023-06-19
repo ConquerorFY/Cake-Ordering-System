@@ -127,6 +127,13 @@ class CakeBST:
                     # if right node not None
                     queue.append(current.getRight())
 
+    def getSortedCakeList(self):
+        # Inorder traversal to get sorted cake list (based on cake code)
+        sortedCakeArr = []
+        inorder(self.root, sortedCakeArr)
+
+        return sortedCakeArr
+
     def print(self):
         if not self.root:
             raise Exception

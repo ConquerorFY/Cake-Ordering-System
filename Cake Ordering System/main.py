@@ -7,11 +7,10 @@ cakeBST = CakeBST()
 orderBST = OrderBST()
 
 def initSystem():
-    readCakeDataFromFile(cakeBST)
-    readOrderDataFromFile(orderBST)
+    readAllCakeDataFromFile(cakeBST)
 
 def main():
     initSystem()
-    welcomeScreen()
+    welcomeScreen(cakeBST, orderBST)
 
 main()

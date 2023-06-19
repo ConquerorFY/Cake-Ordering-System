@@ -1,7 +1,6 @@
 from customer import Auth
 from cake import CakeBST
 from order import OrderBST
-from file import clearCustomerSessionFile
 
 def welcomeScreen():
     while True:
@@ -106,7 +105,7 @@ def customerDashboard():
             return
         elif option == 4:
             # logout
-            clearCustomerSessionFile()
+            Auth.logOutCustomer()
             welcomeScreen()
             return
 

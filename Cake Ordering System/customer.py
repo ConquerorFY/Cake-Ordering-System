@@ -84,5 +84,9 @@ class Auth:
         return Customer(custInfo[0], custInfo[1], custInfo[2], custInfo[3], custInfo[4], custInfo[5])
 
     @staticmethod
+    def updateCustomerAccount(customer):
+        updateCustomerAccountDetails(customer)
+
+    @staticmethod
     def logOutCustomer():
         clearCustomerSessionFile()

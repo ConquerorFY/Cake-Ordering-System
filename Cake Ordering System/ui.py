@@ -1,3 +1,4 @@
+import re
 from customer import Auth
 from cake import CakeBST
 from order import OrderBST
@@ -102,11 +103,59 @@ def customerDashboard():
             return
         elif option == 3:
             # modify account details
+            customerUpdateScreen()
             return
         elif option == 4:
             # logout
             Auth.logOutCustomer()
             welcomeScreen()
+            return
+
+def customerUpdateScreen():
+    while True:
+        customerInfo = Auth.getAuthenticatedCustomerDetails()
+
+        print("Update Customer Account Details")
+        print("---------------------------------------------\n\n")
+
+        print("Customer ID: " + customerInfo.getCustID())
+        print("Name: " + customerInfo.getName())
+        print("Address: " + customerInfo.getAddress())
+        print("Contact: " + customerInfo.getContact())
+        print("Username: " + customerInfo.getUsername())
+        print("Password: " + re.sub(r'.', '*', customerInfo.getPassword()))
+
+        print("\n\nPlease select an option: ")
+        print("1. Update information")
+        print("2. Return")
+        option = int(input("Option: "))
+
+        if option == 1:
+            print("\n\n\n")
+            while True:
+                newName = input("Enter new name ('-' to skip): ")
+                newAddress = input("Enter new address ('-' to skip): ")
+                newContact = input("Enter new contact ('-' to skip): ")
+                newUsername = input("Enter new username ('-' to skip): ")
+                newPassword = input("Enter new password ('-' to skip): ")
+
+                if newName != '-':
+                    customerInfo.setName(newName)
+                if newAddress != '-':
+                    customerInfo.setAddress(newAddress)
+                if newContact != '-':
+                    customerInfo.setContact(newContact)
+                if newUsername != '-':
+                    customerInfo.setUsername(newUsername)
+                if newPassword != '-':
+                    customerInfo.setPassword(newPassword)
+
+                Auth.updateCustomerAccount(customerInfo)
+                print("Account details have been updated successfully!!\n\n")
+                break
+
+        elif option == 2:
+            customerDashboard()
             return
 
 def debugCakeBST(cakeBST: CakeBST):

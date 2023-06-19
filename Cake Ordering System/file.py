@@ -56,6 +56,23 @@ def getCustomerDetailsByUsername(username):
             file.write("")
         return None
 
+def updateCustomerAccountDetails(customer):
+    with open(customerFile, 'r') as file:
+        lines = file.readlines()
+
+    for i in range(len(lines)):
+        dataLine = lines[i].split(separator)
+        chkUsername = dataLine[4]
+
+        if customer.getUsername() == chkUsername:
+            lines[i] = str(customer.getCustID()) + separator + customer.getName() + separator + customer.getAddress() + separator + customer.getContact() + separator + customer.getUsername() + separator + customer.getPassword() + separator + "\n"
+
+    with open(customerFile, 'w') as file:
+        file.writelines(lines)
+
+    # re-create session file
+    createCustomerSessionFile(customer)
+
 def getUniqueCustomerID():
     try:
         file = open(customerFile, "r")

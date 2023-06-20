@@ -2,6 +2,7 @@ import re
 from customer import Auth
 from cake import Cake, CakeBST
 from order import Order, OrderBST
+from utils import clearScreen
 
 def welcomeScreen(cakeBST: CakeBST, orderBST: OrderBST):
     while True:
@@ -19,9 +20,11 @@ def welcomeScreen(cakeBST: CakeBST, orderBST: OrderBST):
 
         option = int(input("Option: "))
         if option == 1: 
+            clearScreen()
             loginScreen(cakeBST, orderBST)
             return
         elif option == 2: 
+            clearScreen()
             registerScreen()
             return
         elif option == 3:
@@ -42,19 +45,24 @@ def loginScreen(cakeBST: CakeBST, orderBST: OrderBST):
         if option == 1:
             result = Auth.authenticateCustomer(username, password)
             if result == 0:
+                clearScreen()
                 print("\n\nAuthentication is successful!\n\n\n\n")
                 orderBST.getAllCustomerOrder()
                 # display customer dashboard after login success
                 customerDashboard(cakeBST, orderBST)
                 return
             elif result == -1:
+                clearScreen()
                 print("\n\nInvalid password detected!\n\n\n\n")
             elif result == -2:
+                clearScreen()
                 print("\n\nCustomer account not found!\n\n\n\n")
             elif result == -3:
+                clearScreen()
                 print("\n\nAn error has occurred! Please try again!\n\n\n\n")
         elif option == 2:
-            loginScreen(cakeBST, orderBST)
+            clearScreen()
+            welcomeScreen(cakeBST, orderBST)
             return
 
 def registerScreen():
@@ -74,11 +82,13 @@ def registerScreen():
 
         if option == 1:
             Auth.registerCustomer(name, address, contact, username, password)
+            clearScreen()
             print("\n\nRegistration is completed!!\n\n\n\n")
             welcomeScreen()
             return
         elif option == 2:
             print("\n\n\n\n")
+            clearScreen()
             welcomeScreen()
             return
 
@@ -87,7 +97,7 @@ def customerDashboard(cakeBST: CakeBST, orderBST: OrderBST):
 
     while True:
         print("Welcome back, " + customerInfo.getName())
-        print("---------------------------------------------\n\n")
+        print("---------------------------------------------\n")
 
         print("Please select the operations you would like to do: ")
         print("1. View / Order Cakes")
@@ -97,24 +107,28 @@ def customerDashboard(cakeBST: CakeBST, orderBST: OrderBST):
         option = int(input("Option: "))
 
         if option == 1:
+            clearScreen()
             # view / order cakes
             cakeDisplayOrderingScreen(cakeBST, orderBST)
             return
         elif option == 2:
+            clearScreen()
             # view / modify orders
             orderViewUpdateScreen(cakeBST, orderBST)
             return
         elif option == 3:
+            clearScreen()
             # modify account details
-            customerUpdateScreen()
+            customerUpdateScreen(cakeBST, orderBST)
             return
         elif option == 4:
             # logout
+            clearScreen()
             Auth.logOutCustomer()
             welcomeScreen(cakeBST, orderBST)
             return
 
-def customerUpdateScreen():
+def customerUpdateScreen(cakeBST: CakeBST, orderBST: OrderBST):
     while True:
         customerInfo = Auth.getAuthenticatedCustomerDetails()
 
@@ -135,6 +149,7 @@ def customerUpdateScreen():
 
         if option == 1:
             print("\n\n\n")
+            clearScreen()
             while True:
                 newName = input("Enter new name ('-' to skip): ")
                 newAddress = input("Enter new address ('-' to skip): ")
@@ -154,11 +169,13 @@ def customerUpdateScreen():
                     customerInfo.setPassword(newPassword)
 
                 Auth.updateCustomerAccount(customerInfo)
+                clearScreen()
                 print("Account details have been updated successfully!!\n\n")
                 break
 
         elif option == 2:
-            customerDashboard()
+            clearScreen()
+            customerDashboard(cakeBST, orderBST)
             return
 
 def cakeDisplayOrderingScreen(cakeBST: CakeBST, orderBST: OrderBST):
@@ -169,7 +186,7 @@ def cakeDisplayOrderingScreen(cakeBST: CakeBST, orderBST: OrderBST):
 
     while True:
         print("Cake Shop Ordering Screen")
-        print("---------------------------------------------\n\n")
+        print("---------------------------------------------\n")
 
         currentCake: Cake = cakeList[currentCakeIndex]
         print("Cake Code: " + str(currentCake.getCakeCode()))
@@ -177,26 +194,29 @@ def cakeDisplayOrderingScreen(cakeBST: CakeBST, orderBST: OrderBST):
         print("Cake Weight: " + str(currentCake.getWeight()))
         print("Cake Unit Price: " + str(currentCake.getUnitPrice()))
 
-        print("\n\n---------------------------------------------")
+        print("\n---------------------------------------------")
         print("[R]eturn    [P]revious     [O]rder     [N]ext")
         print("---------------------------------------------")
         
         option = input()
         if option == 'P' or option == 'p':
+            clearScreen()
             # Previous cake
             if currentCakeIndex > 0:
                 currentCakeIndex -= 1
         elif option == 'N' or option == 'n':
+            clearScreen()
             # Next cake
             if currentCakeIndex < lastCakeIndex:
                 currentCakeIndex += 1
         elif option == 'O' or option == 'o':
+            clearScreen()
             # Order cake
             while True:
                 cakeAmount = int(input("How many cake would you like to order? "))
                 print("---------------------------------------------")
                 print("         Order             Confirmation      ")
-                print("---------------------------------------------\n\n")
+                print("---------------------------------------------\n")
 
                 print("Cake Code: " + str(currentCake.getCakeCode()))
                 print("Cake Flavour: " + currentCake.getFlavor())
@@ -208,11 +228,13 @@ def cakeDisplayOrderingScreen(cakeBST: CakeBST, orderBST: OrderBST):
                 if confirmation == 'Y' or confirmation == 'y':
                     # Add new order
                     orderBST.createNewOrder(currentCake.getCakeCode(), cakeAmount, custID)
-                    print("A new order has been created!")
+                    clearScreen()
+                    print("A new order has been created!\n\n")
                     break
                 else:
                     break
         elif option == 'R' or option == 'r':
+            clearScreen()
             customerDashboard(cakeBST, orderBST)
             return
 
@@ -234,7 +256,7 @@ def orderViewUpdateScreen(cakeBST: CakeBST, orderBST: OrderBST):
         print("Cake Code: " + str(currentCake.getCakeCode()))
         print("Cake Flavour: " + currentCake.getFlavor())
         print("Cake Weight: " + str(currentCake.getWeight()))
-        print("Cake Unit Price: " + str(currentCake.getUnitPrice()))
+        print("Cake Unit Price: " + str(currentCake.getUnitPrice())[:-1])   # exclude the '\n' at the end due to it being the last field as file data lines
         print("Cake Quantity: " + str(currentOrder.getQuantity()))
         print("Total Price: " + "RM" + "{:.2f}".format(float(currentCake.getUnitPrice()[2:]) * int(currentOrder.getQuantity())))
         print("Order Status: " + currentOrder.getStatus())
@@ -245,20 +267,26 @@ def orderViewUpdateScreen(cakeBST: CakeBST, orderBST: OrderBST):
 
         option = input()
         if option == 'P' or option == 'p':
+            clearScreen()
             # Previous order
             if currentOrderIndex > 0:
                 currentOrderIndex -= 1
         elif option == 'N' or option == 'n':
+            clearScreen()
             # Next order
             if currentOrderIndex < lastOrderIndex:
                 currentOrderIndex += 1
         elif option == 'M' or option == 'm':
+            clearScreen()
             # Modify order status
             newOrderStatus = input("What is the new status of the order? ('-' to skip) ")
-            currentOrder.setStatus(newOrderStatus)
-            orderBST.modifyCustomerOrder(currentOrder)
+            if newOrderStatus != '-':
+                currentOrder.setStatus(newOrderStatus)
+                orderBST.modifyCustomerOrder(currentOrder)
+            clearScreen()
             print("Order have been updated!")
         elif option == 'R' or option == 'r':
+            clearScreen()
             customerDashboard(cakeBST, orderBST)
             return
 
